@@ -2,6 +2,7 @@ package biz.cosee.talks.reactiveprogramming;
 
 import biz.cosee.talks.reactiveprogramming.boring.*;
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.schedulers.Schedulers;
@@ -127,11 +128,11 @@ public class Examples {
                         .subscribeOn(Schedulers.io())
                         .doOnNext(delay -> log.info("network: {}", delay)))
                 .map(job -> service.expensiveOperation(job))
+//                .observeOn(Schedulers.computation())
                 .subscribe(Examples::printNext);
 
         sleep(10000);
     }
-
 
     @Test
     public void jobsParallelNetworkAndCompute() {
