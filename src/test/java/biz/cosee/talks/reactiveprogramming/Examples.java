@@ -74,7 +74,7 @@ public class Examples {
     @Test
     public void rtfm() {
         Flowable.fromArray(1, 2, 3)
-                .delay(10, TimeUnit.MILLISECONDS) // documentation
+//                .delay(10, TimeUnit.MILLISECONDS) // documentation
                 .map(number -> number * 3)
                 .filter(number -> number % 2 == 0)
                 .subscribe(                              // block?
@@ -86,7 +86,7 @@ public class Examples {
 
     @Test
     public void declarationsAndExpressions() {
-        Flowable<Integer> result = Flowable.just(service.expensiveOperation());
+        Flowable<Integer> result = Flowable.just(service.expensiveOperation("calculate the meaning of life"));
 
         result.subscribe(Examples::printNext);
         result.subscribe(Examples::printNext);
@@ -127,8 +127,8 @@ public class Examples {
                 .flatMap(url -> Flowable.fromCallable(() -> service.netWorkOperation(url))
                         .subscribeOn(Schedulers.io())
                         .doOnNext(delay -> log.info("network: {}", delay)))
-                .map(job -> service.expensiveOperation(job))
 //                .observeOn(Schedulers.computation())
+                .map(job -> service.expensiveOperation(job))
                 .subscribe(Examples::printNext);
 
         sleep(10000);
@@ -192,17 +192,21 @@ public class Examples {
                 .retry(1)
                 .onErrorResumeNext((err) -> service.netWorkOperationSingle("http://secondary.service"))
                 .map(data -> "Data is " + data)
-                .subscribe(Examples::printNext);
+                .subscribe(
+                        Examples::printNext,
+                        Examples::printError);
         sleep(1000);
     }
 
     @Test
     public void fastestResult() {
         Flowable.fromArray("http://service.far.away", "http://caching.timbuktu")
-                .flatMapSingle(service::netWorkOperationSingle)
+                .flatMapSingle(url ->
+                        service.netWorkOperationSingle(url)
+                        .delay(1000, TimeUnit.MILLISECONDS))
                 .firstOrError()
                 .subscribe(Examples::printNext);
-        sleep(1000);
+        sleep(2000);
     }
 
     // GUIs
