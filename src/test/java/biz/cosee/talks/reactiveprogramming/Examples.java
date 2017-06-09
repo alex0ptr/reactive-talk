@@ -121,6 +121,20 @@ public class Examples {
                 .subscribe(Examples::printNext);
     }
 
+
+    @Test
+    public void poolDiving() {
+        Flowable.fromArray("http://jobs.de", "http://jobs.us", "http://jobs.timbuktu")
+                .map(url -> service.netWorkOperation(url))
+                .doOnNext(delay -> log.info("network: {}", delay))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .map(job -> service.expensiveOperation(job))
+                .subscribe(Examples::printNext);
+
+        sleep(10000);
+    }
+
     @Test
     public void jobsParallelNetwork() {
         Flowable.fromArray("http://jobs.de", "http://jobs.us", "http://jobs.timbuktu")
