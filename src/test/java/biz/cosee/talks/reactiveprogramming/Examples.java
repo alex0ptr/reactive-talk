@@ -126,8 +126,8 @@ public class Examples {
     public void poolDiving() {
         Flowable.fromArray("http://jobs.de", "http://jobs.us", "http://jobs.timbuktu")
                 .map(url -> service.netWorkOperation(url))
-                .doOnNext(delay -> log.info("network: {}", delay))
                 .subscribeOn(Schedulers.io())
+                .doOnNext(delay -> log.info("network: {}", delay))
                 .observeOn(Schedulers.computation())
                 .map(job -> service.expensiveOperation(job))
                 .subscribe(Examples::printNext);
@@ -141,7 +141,6 @@ public class Examples {
                 .flatMap(url -> Flowable.fromCallable(() -> service.netWorkOperation(url))
                         .subscribeOn(Schedulers.io())
                         .doOnNext(delay -> log.info("network: {}", delay)))
-//                .observeOn(Schedulers.computation())
                 .map(job -> service.expensiveOperation(job))
                 .subscribe(Examples::printNext);
 
@@ -216,15 +215,14 @@ public class Examples {
     public void fastestResult() {
         Flowable.fromArray("http://service.far.away", "http://caching.timbuktu")
                 .flatMapSingle(url ->
-                        service.netWorkOperationSingle(url)
-                        .delay(1000, TimeUnit.MILLISECONDS))
+                        service.netWorkOperationSingle(url))
                 .firstOrError()
+                .observeOn(Schedulers.computation())
                 .subscribe(Examples::printNext);
         sleep(2000);
     }
 
     // GUIs
-
     @Test
     public void dimensionsStable() {
         app.onResizes()
@@ -298,7 +296,5 @@ public class Examples {
                 .map(List::size)
                 .subscribe(Examples::printNext);
     }
-
-    // Advanced Best Practices: "Managing State with RxJava" by Jake Wharton
 
 }
