@@ -2,7 +2,6 @@ package biz.cosee.talks.reactiveprogramming;
 
 import biz.cosee.talks.reactiveprogramming.boring.*;
 import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.schedulers.Schedulers;
@@ -50,34 +49,13 @@ public class Examples {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Test
-    public void declarations() {
-        Flowable.fromArray(1, 2, 3)
-                .delay(100, TimeUnit.MILLISECONDS)
-                .map(number -> number * 3)
-                .filter(number -> number % 2 == 0);
-    }
-
     @Test
     public void rtfm() {
         Flowable.fromArray(1, 2, 3)
-//                .delay(10, TimeUnit.MILLISECONDS) // documentation
+                .delay(10, TimeUnit.MILLISECONDS) // documentation
                 .map(number -> number * 3)
                 .filter(number -> number % 2 == 0)
-                .subscribe(                              // block?
+                .subscribe(                         // nothing happes without subscription
                         number -> printNext(number),
                         err -> printError(err),
                         () -> printCompleted()
@@ -148,23 +126,6 @@ public class Examples {
     }
 
     @Test
-    public void jobsParallelNetworkAndCompute() {
-        Flowable.fromArray("http://jobs.de", "http://jobs.us", "http://jobs.timbuktu")
-                .flatMap(url -> Flowable.fromCallable(() -> service.netWorkOperation(url))
-                        .subscribeOn(Schedulers.io())
-                        .doOnNext(delay -> log.info("network: {}", delay)))
-
-                .flatMap(job -> Flowable.fromCallable(() -> service.expensiveOperation(job))
-                        .subscribeOn(Schedulers.computation()))
-                .doOnNext(delay -> log.info("computation: {}", delay))
-
-                .subscribe(Examples::printNext);
-
-        sleep(10000);
-    }
-
-
-    @Test
     public void manyJobs() {
         Flowable.fromArray("http://jobs.de", "http://jobs.us", "http://jobs.timbuktu")
                 .repeat(100)
@@ -209,17 +170,6 @@ public class Examples {
                         Examples::printNext,
                         Examples::printError);
         sleep(1000);
-    }
-
-    @Test
-    public void fastestResult() {
-        Flowable.fromArray("http://service.far.away", "http://caching.timbuktu")
-                .flatMapSingle(url ->
-                        service.netWorkOperationSingle(url))
-                .firstOrError()
-                .observeOn(Schedulers.computation())
-                .subscribe(Examples::printNext);
-        sleep(2000);
     }
 
     // GUIs
@@ -267,32 +217,31 @@ public class Examples {
     }
 
     @Test
-    public void sseAppleTwitterStocks() { // or textfields, radiobuttons etc.
+    public void sseAWSTwitterStocks() { // or textfields, radiobuttons etc.
         DecimalFormat df = new DecimalFormat("#.00");
 
-        Flowable<String> appleNews = web.appleNews()
+        Flowable<String> awsNews = web.awsNews()
                 .doOnNext(next -> log.info("news"));
-        Flowable<Integer> appleStocks = web.appleStocksInDollar()
+        Flowable<Integer> awsStock = web.awsStockInDollar()
                 .doOnNext(next -> log.info("stock"));
-        Flowable<Double> dollarToEur = web.getDollarEurConversionStream()
+        Flowable<Double> dollarToEur = web.getDollarEurConversion()
                 .doOnNext(next -> log.info("conversion"));
 
         Flowable.combineLatest(
-                appleNews,
-                appleStocks,
+                awsNews,
+                awsStock,
                 dollarToEur,
-                (news, value, conversion) -> "APP " + df.format(value * conversion)  + " EUR; Latest News: " + news)
+                (news, value, conversion) -> "AWS " + df.format(value * conversion) + " EUR; Latest News: " + news)
                 .subscribe(Examples::printNext);
 
         sleep(60000);
     }
 
-
     @Test
     public void multiClick() {
         app.onClicks()
                 .buffer(app.onClicks()
-                    .debounce(200, TimeUnit.MILLISECONDS))
+                        .debounce(200, TimeUnit.MILLISECONDS))
                 .map(List::size)
                 .subscribe(Examples::printNext);
     }
