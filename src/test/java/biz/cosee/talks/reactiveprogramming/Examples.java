@@ -64,7 +64,7 @@ public class Examples {
 
     @Test
     public void declarationsAndExpressions() {
-        Flowable<Integer> result = Flowable.just(service.expensiveOperation("calculate the meaning of life"));
+        Flowable<Integer> result = Flowable.just(service.expensiveOperation("calculate a random"));
 
         result.subscribe(Examples::printNext);
         result.subscribe(Examples::printNext);
@@ -72,7 +72,7 @@ public class Examples {
 
     @Test
     public void notFutures() {
-        Flowable<Integer> result = Flowable.fromCallable(() -> service.expensiveOperation());
+        Flowable<Integer> result = Flowable.fromCallable(() -> service.expensiveOperation("calculate a random"));
 
         result.subscribe(Examples::printNext);
         result.subscribe(Examples::printNext);
