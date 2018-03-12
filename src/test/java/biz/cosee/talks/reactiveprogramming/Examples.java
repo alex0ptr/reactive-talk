@@ -4,8 +4,8 @@ import biz.cosee.talks.reactiveprogramming.boring.*;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.flowables.ConnectableFlowable;
+import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class Examples {
     @Test
     public void rtfm() {
         Flowable.fromArray(1, 2, 3)
-                .delay(10, TimeUnit.MILLISECONDS) // documentation
+//                .delay(10, TimeUnit.MILLISECONDS) // documentation
                 .map(number -> number * 3)
                 .filter(number -> number % 2 == 0)
                 .subscribe(                         // nothing happes without subscription
@@ -161,6 +161,14 @@ public class Examples {
     }
 
     @Test
+    public void apiGatewayWith() {
+        service.netWorkOperationSingle("http://bank.money")
+                .zipWith(service.netWorkOperationSingle("http://currency.conversions"),
+                        (money, conversion) -> money * conversion)
+                .subscribe(Examples::printNext);
+    }
+
+    @Test
     public void retries() {
         service.netWorkOperationSingle("http://primary.service")
                 .retry(1)
@@ -185,8 +193,8 @@ public class Examples {
     public void statePropagation() {
         MyViewComponent debuggableView = new MyViewComponent();
         MyViewComponent textView = new MyViewComponent();
-        PublishSubject<Object> debugViewDestroying = PublishSubject.create();
-        PublishSubject<Object> textViewDestroying = PublishSubject.create();
+        PublishProcessor<Object> debugViewDestroying = PublishProcessor.create();
+        PublishProcessor<Object> textViewDestroying = PublishProcessor.create();
 
         appStateService.onStateChanges()
                 .map(ApplicationState::isDebugMode)
@@ -217,7 +225,7 @@ public class Examples {
     }
 
     @Test
-    public void sseAWSTwitterStocks() { // or textfields, radiobuttons etc.
+    public void sseAWSTwitterStocks() {
         DecimalFormat df = new DecimalFormat("#.00");
 
         Flowable<String> awsNews = web.awsNews()
@@ -231,7 +239,7 @@ public class Examples {
                 awsNews,
                 awsStock,
                 dollarToEur,
-                (news, value, conversion) -> "AWS " + df.format(value * conversion) + " EUR; Latest News: " + news)
+                (news, stock, conversion) -> "AWS " + df.format(stock * conversion) + " EUR; Latest News: " + news)
                 .subscribe(Examples::printNext);
 
         sleep(60000);
