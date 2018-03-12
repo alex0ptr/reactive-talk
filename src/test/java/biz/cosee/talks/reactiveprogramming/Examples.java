@@ -52,7 +52,7 @@ public class Examples {
     @Test
     public void rtfm() {
         Flowable.fromArray(1, 2, 3)
-//                .delay(10, TimeUnit.MILLISECONDS) // documentation
+                .delay(10, TimeUnit.MILLISECONDS) // documentation
                 .map(number -> number * 3)
                 .filter(number -> number % 2 == 0)
                 .subscribe(                         // nothing happes without subscription
