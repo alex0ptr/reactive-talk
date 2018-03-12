@@ -55,7 +55,7 @@ public class Examples {
                 .delay(10, TimeUnit.MILLISECONDS) // documentation
                 .map(number -> number * 3)
                 .filter(number -> number % 2 == 0)
-                .subscribe(                         // nothing happes without subscription
+                .subscribe(                         // nothing happens without subscription (pull)
                         number -> printNext(number),
                         err -> printError(err),
                         () -> printCompleted()
