@@ -134,9 +134,8 @@ public class Examples {
                         .doOnNext(delay -> log.info("network: {}", delay)))
 
                 .flatMap(job -> Flowable.fromCallable(() -> service.expensiveOperation(job))
-                        .subscribeOn(Schedulers.computation()))
-                .doOnNext(delay -> log.info("computation: {}", delay))
-
+                        .subscribeOn(Schedulers.computation())
+                        .doOnNext(delay -> log.info("computation: {}", delay)))
                 .subscribe(Examples::printNext);
 
         sleep(10000);
