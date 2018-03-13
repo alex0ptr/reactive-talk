@@ -1,10 +1,24 @@
 package biz.cosee.talks.reactiveprogramming.boring;
 
 import io.reactivex.Flowable;
+import org.reactivestreams.Subscriber;
 
 import java.time.LocalTime;
 
 public class App {
+
+    public Flowable<MousePosition> mouseDown() {
+        Flowable.empty();
+    }
+
+    public Flowable<MousePosition> mouseMove() {
+        Flowable.empty();
+    }
+
+    public Flowable<MousePosition> mouseUp() {
+        return Flowable.empty();
+    }
+
     public class Click {
 
         private LocalTime when;
@@ -45,3 +59,4 @@ public class App {
         return Flowable.empty();
     }
 }
+

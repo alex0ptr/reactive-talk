@@ -2,7 +2,6 @@ package biz.cosee.talks.reactiveprogramming;
 
 import biz.cosee.talks.reactiveprogramming.boring.*;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
 import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
@@ -16,6 +15,9 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Examples {
+
+    private static void updateLine(LineEndChanged lineEndChanged) {
+    }
 
     private void setUserImage(Integer image) {
     }
@@ -60,14 +62,6 @@ public class Examples {
                         err -> printError(err),
                         () -> printCompleted()
                 );
-    }
-
-    @Test
-    public void declarationsAndExpressions() {
-        Flowable<Integer> result = Flowable.just(service.expensiveOperation("calculate a random"));
-
-        result.subscribe(Examples::printNext);
-        result.subscribe(Examples::printNext);
     }
 
     @Test
@@ -150,32 +144,16 @@ public class Examples {
     }
 
     @Test
-    public void apiGateway() {
-        Integer result = Single.zip(
-                service.netWorkOperationSingle("http://bank.money"),
-                service.netWorkOperationSingle("http://currency.conversions"),
-                (money, conversion) -> money * conversion)
-                .blockingGet(); // legacy again
-        Examples.printNext(result);
-    }
-
-    @Test
-    public void apiGatewayWith() {
-        service.netWorkOperationSingle("http://bank.money")
+    public void apiGatewayMagic() {
+        service.netWorkOperationSingle("http://buggy.bank.money")
+                .retry(1)
+                .onErrorResumeNext((err) -> service.netWorkOperationSingle("http://slow.bank.money"))
                 .zipWith(service.netWorkOperationSingle("http://currency.conversions"),
                         (money, conversion) -> money * conversion)
-                .subscribe(Examples::printNext);
-    }
-
-    @Test
-    public void retries() {
-        service.netWorkOperationSingle("http://primary.service")
-                .retry(1)
-                .onErrorResumeNext((err) -> service.netWorkOperationSingle("http://secondary.service"))
-                .map(data -> "Data is " + data)
                 .subscribe(
                         Examples::printNext,
                         Examples::printError);
+
         sleep(1000);
     }
 
@@ -251,6 +229,16 @@ public class Examples {
                         .debounce(200, TimeUnit.MILLISECONDS))
                 .map(List::size)
                 .subscribe(Examples::printNext);
+    }
+
+    @Test
+    void drawLine() {
+        app.mouseDown()
+                .map(position -> new Line(position, position))
+                .flatMap(line -> app.mouseMove()
+                        .takeUntil(app.mouseUp())
+                        .map(position -> new LineEndChanged(line, position)))
+                .subscribe(Examples::updateLine); // side effects are here
     }
 
 }
