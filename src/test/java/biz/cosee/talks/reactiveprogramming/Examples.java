@@ -197,6 +197,7 @@ public class Examples {
 
         debugViewDestroying.onNext(new Object());
         debugViewDestroying.onComplete();
+
         appStateService.toggleDebugMode();
         appStateService.setNewLanguage(Locale.CHINA);
     }
@@ -232,7 +233,7 @@ public class Examples {
     }
 
     @Test
-    void drawLine() {
+    public void drawLine() {
         app.mouseDown()
                 .map(position -> new Line(position, position))
                 .flatMap(line -> app.mouseMove()

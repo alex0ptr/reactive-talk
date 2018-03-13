@@ -8,11 +8,11 @@ import java.time.LocalTime;
 public class App {
 
     public Flowable<MousePosition> mouseDown() {
-        Flowable.empty();
+        return Flowable.empty();
     }
 
     public Flowable<MousePosition> mouseMove() {
-        Flowable.empty();
+        return Flowable.empty();
     }
 
     public Flowable<MousePosition> mouseUp() {
