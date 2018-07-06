@@ -1,4 +1,4 @@
-package biz.cosee.talks.reactiveprogramming.boring;
+package de.qaware.talks.reactiveprogramming.boring;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

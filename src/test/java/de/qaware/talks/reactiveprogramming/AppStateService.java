@@ -1,6 +1,6 @@
-package biz.cosee.talks.reactiveprogramming;
+package de.qaware.talks.reactiveprogramming;
 
-import biz.cosee.talks.reactiveprogramming.boring.ApplicationState;
+import de.qaware.talks.reactiveprogramming.boring.ApplicationState;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.ReplayProcessor;
 

@@ -1,4 +1,4 @@
-package biz.cosee.talks.reactiveprogramming.boring;
+package de.qaware.talks.reactiveprogramming.boring;
 
 import java.util.Locale;
 

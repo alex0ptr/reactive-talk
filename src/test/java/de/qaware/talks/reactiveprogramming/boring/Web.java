@@ -1,11 +1,9 @@
-package biz.cosee.talks.reactiveprogramming.boring;
+package de.qaware.talks.reactiveprogramming.boring;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import static java.time.Duration.ofMillis;
 

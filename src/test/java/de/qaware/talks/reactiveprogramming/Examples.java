@@ -1,6 +1,6 @@
-package biz.cosee.talks.reactiveprogramming;
+package de.qaware.talks.reactiveprogramming;
 
-import biz.cosee.talks.reactiveprogramming.boring.*;
+import de.qaware.talks.reactiveprogramming.boring.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
