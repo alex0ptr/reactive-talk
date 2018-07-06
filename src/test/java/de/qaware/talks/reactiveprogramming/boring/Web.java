@@ -1,9 +1,13 @@
 package biz.cosee.talks.reactiveprogramming.boring;
 
-import io.reactivex.Flowable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static java.time.Duration.ofMillis;
 
 public class Web {
 
@@ -17,40 +21,43 @@ public class Web {
             "AWS, Microsoft Collaborate on Deep Learning with 'Gluon'"
     };
     private final static Random random = new Random();
-    private final Flowable<String> awsNewsStream;
-    private final Flowable<Integer> awsStocksStream;
-    private final Flowable<Double> dollarEurConversionStream;
+    private final Flux<String> awsNewsStream;
+    private final Flux<Integer> awsStocksStream;
+    private final Flux<Double> dollarEurConversionStream;
 
 
     public Web() {
-        awsNewsStream = Flowable.fromCallable(() -> headLines[random.nextInt(headLines.length)])
+        awsNewsStream = Mono.fromCallable(() -> headLines[random.nextInt(headLines.length)])
+                .flux()
                 .compose(Web::repeatAtRandomTime)
                 .share();
 
-        awsStocksStream = Flowable.fromCallable(() -> 135 + random.nextInt(50))
+        awsStocksStream = Mono.fromCallable(() -> 135 + random.nextInt(50))
+                .flux()
                 .compose(Web::repeatAtRandomTime)
                 .share();
 
-        dollarEurConversionStream = Flowable.fromCallable(() -> 0.8 + random.nextFloat() * 2)
+        dollarEurConversionStream = Mono.fromCallable(() -> 0.8 + random.nextFloat() * 2)
+                .flux()
                 .compose(Web::repeatAtRandomTime)
                 .share();
     }
 
-    private static <T> Flowable<T> repeatAtRandomTime(Flowable<T> toRepeat) {
+    private static <T> Flux<T> repeatAtRandomTime(Flux<T> toRepeat) {
         return toRepeat
-                .delaySubscription(1000 + random.nextInt(4000), TimeUnit.MILLISECONDS)
+                .delaySubscription(ofMillis(1000 + random.nextInt(4000)))
                 .repeat();
     }
 
-    public Flowable<String> awsNews() {
+    public Flux<String> awsNews() {
         return awsNewsStream;
     }
 
-    public Flowable<Integer> awsStockInDollar() {
+    public Flux<Integer> awsStockInDollar() {
         return awsStocksStream;
     }
 
-    public Flowable<Double> getDollarEurConversion() {
+    public Flux<Double> getDollarEurConversion() {
         return dollarEurConversionStream;
     }
 }

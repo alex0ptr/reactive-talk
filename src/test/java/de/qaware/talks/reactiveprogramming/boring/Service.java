@@ -1,9 +1,9 @@
 package biz.cosee.talks.reactiveprogramming.boring;
 
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Random;
 
@@ -48,15 +48,15 @@ public class Service {
         return duration;
     }
 
-    public Single<Integer> netWorkOperationSingle(String url) {
-        return Single.fromCallable(() -> netWorkOperation(url))
-                .subscribeOn(Schedulers.io())
+    public Mono<Integer> netWorkOperationMono(String url) {
+        return Mono.fromCallable(() -> netWorkOperation(url))
+                .subscribeOn(Schedulers.elastic())
                 .doOnSuccess(delay -> log.info("network: {}", delay));
     }
 
-    public Single<Integer> expensiveOperationSingle(Integer integer) {
-        return Single.fromCallable(this::expensiveOperation)
-                .subscribeOn(Schedulers.computation())
+    public Mono<Integer> expensiveOperationSingle(Integer integer) {
+        return Mono.fromCallable(this::expensiveOperation)
+                .subscribeOn(Schedulers.parallel())
                 .doOnSuccess(delay -> log.info("computation: {}", delay));
     }
 }

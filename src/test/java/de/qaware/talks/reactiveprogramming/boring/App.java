@@ -1,22 +1,22 @@
 package biz.cosee.talks.reactiveprogramming.boring;
 
-import io.reactivex.Flowable;
-import org.reactivestreams.Subscriber;
+
+import reactor.core.publisher.Flux;
 
 import java.time.LocalTime;
 
 public class App {
 
-    public Flowable<MousePosition> mouseDown() {
-        return Flowable.empty();
+    public Flux<MousePosition> mouseDown() {
+        return Flux.empty();
     }
 
-    public Flowable<MousePosition> mouseMove() {
-        return Flowable.empty();
+    public Flux<MousePosition> mouseMove() {
+        return Flux.empty();
     }
 
-    public Flowable<MousePosition> mouseUp() {
-        return Flowable.empty();
+    public Flux<MousePosition> mouseUp() {
+        return Flux.empty();
     }
 
     public class Click {
@@ -51,12 +51,12 @@ public class App {
     }
 
 
-    public Flowable<Click> onClicks() {
-        return Flowable.empty();
+    public Flux<Click> onClicks() {
+        return Flux.empty();
     }
 
-    public Flowable<Dimension> onResizes() {
-        return Flowable.empty();
+    public Flux<Dimension> onResizes() {
+        return Flux.empty();
     }
 }
 
